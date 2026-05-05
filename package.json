@@ -1,0 +1,29 @@
+{
+  "name": "api-refund",
+  "version": "1.0.0",
+  "description": "API for refunds requests",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diegodevtech/API-refund.git"
+  },
+  "author": "diegodevtech",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/diegodevtech/API-refund/issues"
+  },
+  "homepage": "https://github.com/diegodevtech/API-refund#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  }
+}
