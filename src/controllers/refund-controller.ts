@@ -40,4 +40,65 @@ export class RefundController {
     })
     res.status(201).json(refund);
   }
+
+  async getAll(req: Request, res: Response) {
+    if(!req.user || !req.user?.id) {
+      throw new AppError('User not found', 404);
+    }
+
+    if(!req.user?.role || req.user?.role !== UserRole.EMPLOYEE) {
+      throw new AppError('Unauthorized', 403);
+    }
+
+    const refunds = await prisma.refunds.findMany({
+      where: {
+        userId: req.user.id
+      }
+    });
+    res.json(refunds);
+  }
+
+  async getById(req: Request, res: Response) {
+
+    const paramsSchema = z.object({
+      id: z.string()
+    });
+
+    const { id } = paramsSchema.parse(req.params);
+
+    if(!req.user || !req.user?.id) {
+      throw new AppError('User not found', 404);
+    }
+
+    if(!req.user?.role || req.user?.role !== UserRole.EMPLOYEE) {
+      throw new AppError('Unauthorized', 403);
+    }
+
+    const refund = await prisma.refunds.findUnique({
+      where: {
+        id,
+        userId: req.user.id
+      },
+    });
+
+    if(!refund) {
+      throw new AppError('Refund not found', 404);
+    }
+
+    res.json(refund);
+  }
+
+  async managerGetAll(req: Request, res: Response) {
+    if(!req.user || !req.user?.id) {
+      throw new AppError('User not found', 404);
+    }
+
+    if(!req.user?.role || req.user?.role !== UserRole.MANAGER) {
+      throw new AppError('Unauthorized', 403);
+    }
+
+    const refunds = await prisma.refunds.findMany();
+    res.json(refunds);
+  }
+
 }
