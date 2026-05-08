@@ -5,7 +5,7 @@ import { z } from 'zod';
 export class UserController {
   async create(request: Request, response: Response) {
     const createUserSchema = z.object({
-      name: z.string().trim().min(2),
+      name: z.string().trim().min(2, { message: "Name must be at least 2 characters long" }),
       email: z.email({ error: "Invalid email address" }).toLowerCase(),
       password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
       role: z.enum([UserRole.EMPLOYEE, UserRole.MANAGER], { message: "Role must be either 'EMPLOYEE' or 'MANAGER'" }).default(UserRole.EMPLOYEE),
