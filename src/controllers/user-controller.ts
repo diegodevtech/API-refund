@@ -1,6 +1,9 @@
+import { prisma } from '@/database/prisma';
 import { UserRole } from '@/generated/prisma/enums';
+import { AppError } from '@/utils/AppError';
 import { Request, Response } from 'express';
 import { z } from 'zod';
+import { hash } from 'bcrypt';
 
 export class UserController {
   async create(request: Request, response: Response) {
@@ -12,6 +15,24 @@ export class UserController {
     });
 
     const { name, email, password, role } = createUserSchema.parse(request.body);
-    response.status(201).json({ name, password, email, role });
+
+    const userWithEmailExists = await prisma.user.findUnique({ where: { email } });
+
+    if (userWithEmailExists) {
+      throw new AppError("A user with this email already exists", 409);
+    }
+
+    const hashedPassword = await hash(password, 10);
+
+    await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role,
+      },
+    });
+
+    response.status(201).json({ message: `A new user for ${name} has been created` });
   }
 }
